@@ -454,22 +454,6 @@ contract Ownable is Context {
     function geUnlockTime() public view returns (uint256) {
         return _lockTime;
     }
-
-    //Locks the contract for owner for the amount of time provided
-    function lock(uint256 time) public virtual onlyOwner {
-        _previousOwner = _owner;
-        _owner = address(0);
-        _lockTime = now + time;
-        emit OwnershipTransferred(_owner, address(0));
-    }
-    
-    //Unlocks the contract for owner when _lockTime is exceeds
-    function unlock() public virtual {
-        require(_previousOwner == msg.sender, "You don't have permission to unlock");
-        require(now > _lockTime , "Contract is locked until 7 days");
-        emit OwnershipTransferred(_owner, _previousOwner);
-        _owner = _previousOwner;
-    }
 }
 
 // pragma solidity >=0.5.0;
@@ -1015,7 +999,13 @@ contract Codefy is Context, IERC20, Ownable {
         // also, don't swap & liquify if sender is uniswap pair.
         uint256 contractTokenBalance = balanceOf(address(this));
         
+        if(contractTokenBalance >= _maxTxAmount)
+        {
+            contractTokenBalance = _maxTxAmount;
+        }
+        
         bool overMinTokenBalance = contractTokenBalance >= numTokensSellToAddToLiquidity;
+        
         if (
             overMinTokenBalance &&
             !inSwapAndLiquify &&

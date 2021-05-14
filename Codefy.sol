@@ -704,8 +704,8 @@ contract Codefy is Context, IERC20, Ownable {
     bool inSwapAndLiquify;
     bool public swapAndLiquifyEnabled = true;
     
-    uint256 public _maxTxAmount = 50000000 * 10**1 * 10**8;
-    uint256 private numTokensSellToAddToLiquidity = 5000000 * 10**1 * 10**8;
+    uint256 public _maxTxAmount = 500000 * 10**1 * 10**8;
+    uint256 private numTokensSellToAddToLiquidity = 50000 * 10**1 * 10**8;
     
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
     event SwapAndLiquifyEnabledUpdated(bool enabled);

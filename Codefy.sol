@@ -1,7 +1,20 @@
 /**
 *
-*   #Codefy:
+*  _____             _         __          _____         _  _              _    _                    
+* /  __ \           | |       / _|        /  __ \       | || |            | |  (_)                   
+* | /  \/  ___    __| |  ___ | |_  _   _  | /  \/  ___  | || |  ___   ___ | |_  _   ___   _ __   ___ 
+* | |     / _ \  / _` | / _ \|  _|| | | | | |     / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|
+* | \__/\| (_) || (_| ||  __/| |  | |_| | | \__/\| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \
+* \____/ \___/  \__,_| \___||_|   \__, |  \____/ \___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/
+*                                  __/ |                                                            
+*                                 |___/   
+*   ## Codefy Collections ##
 *   Website: https://codefy.cc
+*   Github: https://github.com/CodefyDev/codefy_protocol/blob/main/Codefy.sol
+*   Telegram: https://t.me/CFYCC
+*   Twitter: https://twitter.com/CODEFY_CFY
+*   Reddit: https://www.reddit.com/user/CODEFYCOLLECTIONS
+*   Medium: https://codefy.medium.com/
 *   
 */
                         

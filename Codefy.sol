@@ -676,8 +676,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-
-contract Codefy is Context, IERC20, Ownable {
+contract CodefyCollections is Context, IERC20, Ownable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -698,7 +697,7 @@ contract Codefy is Context, IERC20, Ownable {
     string private _name = "Codefy Collections";
     string private _symbol = "CFY";
     uint8 private _decimals = 9;
-    
+
     uint256 public _taxFee = 1;
     uint256 private _previousTaxFee = _taxFee;
     
@@ -708,26 +707,8 @@ contract Codefy is Context, IERC20, Ownable {
     IUniswapV2Router02 public immutable uniswapV2Router;
     address public immutable uniswapV2Pair;
     
-    bool inSwapAndLiquify;
-    bool public swapAndLiquifyEnabled = true;
-    
-    uint256 public _maxTxAmount = 500000 * 10**1 * 10**8;
-    uint256 private numTokensSellToAddToLiquidity = 50000 * 10**1 * 10**8;
-    
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
-    event SwapAndLiquifyEnabledUpdated(bool enabled);
-    event SwapAndLiquify(
-        uint256 tokensSwapped,
-        uint256 ethReceived,
-        uint256 tokensIntoLiqudity
-    );
-    
-    modifier lockTheSwap {
-        inSwapAndLiquify = true;
-        _;
-        inSwapAndLiquify = false;
-    }
-    
+   
     constructor () public {
         _rOwned[_msgSender()] = _rTotal;
         
@@ -873,27 +854,14 @@ contract Codefy is Context, IERC20, Ownable {
         _isExcludedFromFee[account] = false;
     }
     
-    
     function setTaxFeePercent(uint256 txFee) external onlyOwner() {
-         require(txFee >= 1 && txFee <= 10, 'taxFee should be in 1 - 10');
+         require(txFee >= 1 && txFee <= 10, 'taxFee should be in 0 - 10');
          _taxFee = txFee;
     }
     
     function setLiquidityFeePercent(uint256 liFee) external onlyOwner() {
-         require(liFee >= 1 && liFee <= 10, 'liquidityFee should be in 1 - 10');
+         require(liFee >= 1 && liFee <= 10, 'liquidityFee should be in 0 - 10');
          _liquidityFee = liFee;
-    }
-    
-    function setMaxTxPercent(uint256 maxTxPercent) external onlyOwner() {
-         require(maxTxPercent >= 1 && maxTxPercent <= 100, "maxTxPercent should be in 1 - 100");
-         _maxTxAmount = _tTotal.mul(maxTxPercent).div(
-         10**2
-        );
-    }
-
-    function setSwapAndLiquifyEnabled(bool _enabled) external onlyOwner {
-        swapAndLiquifyEnabled = _enabled;
-        emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
     
      //to recieve ETH from uniswapV2Router when swaping
@@ -998,31 +966,8 @@ contract Codefy is Context, IERC20, Ownable {
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
         if(from != owner() && to != owner())
-            require(amount <= _maxTxAmount, "Transfer amount exceeds the maxTxAmount.");
+            require(amount > 0, "Transfer amount must be greater than zero");
 
-        // is the token balance of this contract address over the min number of
-        // tokens that we need to initiate a swap + liquidity lock?
-        // also, don't get caught in a circular liquidity event.
-        // also, don't swap & liquify if sender is uniswap pair.
-        uint256 contractTokenBalance = balanceOf(address(this));
-        
-        if(contractTokenBalance >= _maxTxAmount)
-        {
-            contractTokenBalance = _maxTxAmount;
-        }
-        
-        bool overMinTokenBalance = contractTokenBalance >= numTokensSellToAddToLiquidity;
-        
-        if (
-            overMinTokenBalance &&
-            !inSwapAndLiquify &&
-            from != uniswapV2Pair &&
-            swapAndLiquifyEnabled
-        ) {
-            contractTokenBalance = numTokensSellToAddToLiquidity;
-            //add liquidity
-            swapAndLiquify(contractTokenBalance);
-        }
         
         //indicates if fee should be deducted from transfer
         bool takeFee = true;
@@ -1034,29 +979,6 @@ contract Codefy is Context, IERC20, Ownable {
         
         //transfer amount, it will take tax, burn, liquidity fee
         _tokenTransfer(from,to,amount,takeFee);
-    }
-
-    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
-        // split the contract balance into halves
-        uint256 half = contractTokenBalance.div(2);
-        uint256 otherHalf = contractTokenBalance.sub(half);
-
-        // capture the contract's current ETH balance.
-        // this is so that we can capture exactly the amount of ETH that the
-        // swap creates, and not make the liquidity event include any ETH that
-        // has been manually sent to the contract
-        uint256 initialBalance = address(this).balance;
-
-        // swap tokens for ETH
-        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
-
-        // how much ETH did we just swap into?
-        uint256 newBalance = address(this).balance.sub(initialBalance);
-
-        // add liquidity to uniswap
-        addLiquidity(otherHalf, newBalance);
-        
-        emit SwapAndLiquify(half, newBalance, otherHalf);
     }
 
     function swapTokensForEth(uint256 tokenAmount) private {

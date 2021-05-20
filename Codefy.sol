@@ -692,8 +692,8 @@ contract CodefyCollections is Context, IERC20, Ownable {
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
-    string private _name = "Codefy Collections";
-    string private _symbol = "CFY";
+    string private constant _name = "Codefy Collections";
+    string private constant _symbol = "CFY";
     uint8 private _decimals = 9;
 
     uint256 public _taxFee = 4;
@@ -722,14 +722,14 @@ contract CodefyCollections is Context, IERC20, Ownable {
         emit Transfer(address(0), _msgSender(), _tTotal);
     }
 
-    function name() public view returns (string memory) {
+    function name() public pure returns (string memory) {
         return _name;
     }
 
-    function symbol() public view returns (string memory) {
+    function symbol() public pure returns (string memory) {
         return _symbol;
     }
-
+    
     function decimals() public view returns (uint8) {
         return _decimals;
     }

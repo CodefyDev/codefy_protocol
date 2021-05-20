@@ -688,12 +688,12 @@ contract CodefyCollections is Context, IERC20, Ownable {
     address[] private _excluded;
    
     uint256 private constant MAX = ~uint256(0);
-    uint256 private _tTotal = 100000000 * 10**1 * 10**8;
+    uint256 private constant _tTotal = 100000000 * 10**1 * 10**8;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
-    string private _name = "Codefy Collections";
-    string private _symbol = "CFY";
+    string private constant _name = "Codefy Collections";
+    string private constant _symbol = "CFY";
     uint8 private _decimals = 9;
 
     uint256 public _taxFee = 4;
@@ -844,7 +844,7 @@ contract CodefyCollections is Context, IERC20, Ownable {
         _isExcludedFromFee[account] = true;
     }
     
-    function includeInFee(address account) public onlyOwner {
+    function includeInFee(address account) external onlyOwner {
         _isExcludedFromFee[account] = false;
     }
     

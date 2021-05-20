@@ -631,8 +631,6 @@ interface IUniswapV2Router01 {
     function getAmountsIn(uint amountOut, address[] calldata path) external view returns (uint[] memory amounts);
 }
 
-
-
 // pragma solidity >=0.6.2;
 
 interface IUniswapV2Router02 is IUniswapV2Router01 {
@@ -698,11 +696,8 @@ contract CodefyCollections is Context, IERC20, Ownable {
     string private _symbol = "CFY";
     uint8 private _decimals = 9;
 
-    uint256 public _taxFee = 1;
+    uint256 public _taxFee = 4;
     uint256 private _previousTaxFee = _taxFee;
-    
-    //uint256 public _liquidityFee = 1;
-    //uint256 private _previousLiquidityFee = _liquidityFee;
 
     IUniswapV2Router02 public immutable uniswapV2Router;
     address public immutable uniswapV2Pair;
